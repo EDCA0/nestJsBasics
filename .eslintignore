@@ -1,0 +1,8 @@
+# Ignorar la carpeta de output de compilación
+dist
+
+# Ignorar las dependencias
+node_modules
+
+# Otros archivos de configuración o builds que no deban ser analizados
+*.js
