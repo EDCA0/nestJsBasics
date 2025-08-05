@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put } from '@nestjs/common';
 
 interface User {
 	id: string;
@@ -52,6 +52,7 @@ export class UsersController {
 	@Post()
 	createUser(@Body() body: UserBody) {
 		const lastId = this.users[this.users.length - 1];
+
 		const User = {
 			id: String(Number(lastId.id) + 1),
 			...body,
@@ -61,13 +62,29 @@ export class UsersController {
 		return { User };
 	}
 
+	@Put(':id')
+	updateUser(@Param('id') id: string, @Body() changes: UserBody) {
+		const place = this.users.findIndex((user) => user.id === id);
+
+		if (place === -1) {
+			throw new NotFoundException('Doesnt exists');
+		}
+
+		this.users[place] = {
+			id: this.users[place].id,
+			...changes,
+		};
+
+		return this.users[place];
+	}
+
 	@Delete(':id')
 	deleteUser(@Param('id') id: string) {
 		const place = this.users.findIndex((user) => user.id === id);
 		if (place === -1) {
 			throw new NotFoundException('Doesnt exists');
 		}
-		this.users = this.users.splice(place, 1);
+		this.users.splice(place, 1);
 		return {
 			message: 'User deleted',
 		};
