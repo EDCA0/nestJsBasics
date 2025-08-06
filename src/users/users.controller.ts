@@ -5,7 +5,7 @@ import type { User } from './user.model';
 
 @Controller('users')
 export class UsersController {
-	constructor(private usersService: UsersService) {}
+	constructor(private readonly usersService: UsersService) {}
 	@Get()
 	getUsers(): User[] {
 		return this.usersService.FindAll();
