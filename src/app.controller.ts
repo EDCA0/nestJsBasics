@@ -12,7 +12,7 @@ export class AppController {
 
 	@Get()
 	getHello(): string {
-		const myVar = this.configService.get<string>('MY_VARsadasdasdasd', { infer: true });
+		const myVar = this.configService.get<string>('MY_VAR');
 		const message = this.appService.getHello();
 		return `${message} ${myVar}`;
 	}
