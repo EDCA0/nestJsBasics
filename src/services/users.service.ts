@@ -69,4 +69,8 @@ export class UsersService {
 			throw new BadRequestException('Error al eliminar el usuario');
 		}
 	}
+
+	findUserAndProfile(id: number) {
+		console.log(id);
+	}
 }

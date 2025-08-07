@@ -48,7 +48,7 @@ export class Profile extends BaseEntity {
 	@JoinColumn({
 		name: 'user_id',
 	})
-	user: Users;
+	userId: Users;
 
 	@CreateDateColumn({
 		name: 'created_at',

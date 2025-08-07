@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { join } from 'path';
-import { UsersModule } from './users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { join } from 'path';
 import { Env } from '../models/env.model';
+import { ProfilesModule } from './profile.module';
+import { UsersModule } from './users.module';
 
 @Module({
 	imports: [
@@ -25,6 +26,7 @@ import { Env } from '../models/env.model';
 			inject: [ConfigService],
 		}),
 		UsersModule,
+		ProfilesModule,
 	],
 })
 export class AppModule {}

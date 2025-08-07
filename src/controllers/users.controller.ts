@@ -30,4 +30,9 @@ export class UsersController {
 	deleteUser(@Param('id', ParseIntPipe) id: number): Promise<{ message: string }> {
 		return this.usersService.Delete(id);
 	}
+
+	@Get(':id/profile')
+	findUserProfile(@Param('id', ParseIntPipe) id: number) {
+		return this.usersService.findUserAndProfile(id); //> hacer que se pueda acceder al perfil por este metodo, incluso se podria crear el perfil del usuario con este estilo
+	}
 }
