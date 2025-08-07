@@ -3,7 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { join } from 'path';
 import { UsersModule } from './users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Env } from './env.model';
+import { Env } from '../models/env.model';
 
 @Module({
 	imports: [
