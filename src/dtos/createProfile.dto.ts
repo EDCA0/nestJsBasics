@@ -1,26 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsEmail, IsNotEmpty, IsOptional, IsString, IsStrongPassword, IsUrl, Length, ValidateNested } from 'class-validator';
-
-export class CreateUserDto {
-	@IsNotEmpty({ message: 'La contraseña no puede estar vacia' })
-	@IsStrongPassword()
-	userPassword: string;
-
-	@IsNotEmpty({ message: 'El email no puede estar vacio' })
-	@IsEmail({}, { message: 'El email no es valido' })
-	userEmail: string;
-}
-
-export class UpdateUserDto {
-	@IsOptional()
-	@IsStrongPassword()
-	userPassword: string;
-
-	@IsOptional()
-	@IsEmail({}, { message: 'El email no es valido' })
-	userEmail: string;
-}
+import { IsEmail, IsNotEmpty, IsOptional, IsString, IsUrl, Length, ValidateNested } from 'class-validator';
+import { CreateUserDto } from './createUser.dto';
 
 export class CreateProfileDto {
 	@IsNotEmpty({ message: 'El nombre del perfil no puede estar vacío.' })
