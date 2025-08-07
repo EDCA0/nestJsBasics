@@ -2,8 +2,8 @@ import { Users } from 'src/users/entities/user.entity';
 import { BaseEntity, Column, CreateDateColumn, Entity, Index, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('profile')
-@Index(['userEmail'])
-export class User extends BaseEntity {
+@Index(['profileEmail'])
+export class Profile extends BaseEntity {
 	@PrimaryGeneratedColumn()
 	id: number;
 

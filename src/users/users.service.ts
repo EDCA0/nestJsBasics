@@ -1,79 +1,83 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Users } from './entities/user.entity';
 import { CreateUserDto, UpdateUserDto } from './user.dto';
-import { User } from './user.model';
+import { UserResponse } from './user.model';
 
 @Injectable()
 export class UsersService {
-	private users: User[] = [
-		{
-			id: '1',
-			name: 'John Doe',
-			email: 'john.doe@example.com',
-		},
-		{
-			id: '2',
-			name: 'Jane Doe',
-			email: 'jane.doe@example.com',
-		},
-		{
-			id: '3',
-			name: 'Juan Perez',
-			email: 'jp.doe@example.com',
-		},
-		{
-			id: '4',
-			name: 'Pruebas jeje',
-			email: 'correo.doe@example.com',
-		},
-	];
+	constructor(
+		@InjectRepository(Users)
+		private usersRepository: Repository<Users>,
+	) {}
 
-	FindAll(): User[] {
-		return this.users;
+	async FindAll(): Promise<Users[]> {
+		const users = await this.usersRepository.find();
+		return users;
 	}
 
-	FindOneById(id: string): User {
-		const user = this.users.find((user) => user.id === id);
-		if (!user) {
-			throw new NotFoundException('doesnt exists');
-		}
-		return user;
-	}
+	async FindOneById(id: number, needFullUser?: boolean): Promise<UserResponse | Users> {
+		const user = await this.usersRepository.findOne({
+			where: {
+				id: id,
+			},
+		});
 
-	Create(user: CreateUserDto) {
-		const lastId = this.users[this.users.length - 1];
-
-		const User = {
-			id: String(Number(lastId.id) + 1),
-			...user,
-		};
-
-		this.users.push(User);
-		return { User };
-	}
-
-	Update(id: string, changes: UpdateUserDto) {
-		const place = this.users.findIndex((user) => user.id === id);
-
-		if (place === -1) {
-			throw new NotFoundException('Doesnt exists');
+		if (user === null) {
+			throw new NotFoundException('El usuario no existe');
 		}
 
-		this.users[place] = {
-			id: this.users[place].id,
-			...changes,
+		if (needFullUser) {
+			return user;
+		}
+
+		const userResponse: UserResponse = {
+			id: user.id,
+			email: user.userEmail,
+			createdAt: user.createdAt,
 		};
 
-		return this.users[place];
+		return userResponse;
 	}
 
-	Delete(id: string) {
-		const place = this.users.findIndex((user) => user.id === id);
-		if (place === -1) {
-			throw new NotFoundException('Doesnt exists');
+	async Create(body: CreateUserDto): Promise<UserResponse> {
+		try {
+			const thisUser = await this.usersRepository.save(body);
+
+			const userResponse: UserResponse = {
+				id: thisUser.id,
+				email: thisUser.userEmail,
+				createdAt: thisUser.createdAt,
+			};
+
+			return userResponse;
+		} catch {
+			throw new BadRequestException('Error creating user');
 		}
-		this.users.splice(place, 1);
-		return {
-			message: 'User deleted',
-		};
+	}
+
+	async Update(id: number, changes: UpdateUserDto): Promise<boolean | UserResponse> {
+		const user = await this.FindOneById(id, true);
+
+		if (user instanceof Users) {
+			const newUser = this.usersRepository.merge(user, changes);
+
+			const userResponse: UserResponse = {
+				id: newUser.id,
+				email: newUser.userEmail,
+				updatedAt: newUser.updatedAt,
+			};
+
+			return userResponse;
+		}
+
+		return false;
+	}
+
+	async Delete(id: number) {
+		const user = await this.FindOneById(id);
+		await this.usersRepository.delete(user.id);
+		return { message: 'User deleted' };
 	}
 }
