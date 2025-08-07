@@ -3,7 +3,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Users } from './entities/user.entity';
 import { CreateUserDto, UpdateUserDto } from './user.dto';
-import { UserResponse } from './user.model';
 
 @Injectable()
 export class UsersService {
@@ -13,71 +12,61 @@ export class UsersService {
 	) {}
 
 	async FindAll(): Promise<Users[]> {
-		const users = await this.usersRepository.find();
-		return users;
-	}
-
-	async FindOneById(id: number, needFullUser?: boolean): Promise<UserResponse | Users> {
-		const user = await this.usersRepository.findOne({
-			where: {
-				id: id,
-			},
-		});
-
-		if (user === null) {
-			throw new NotFoundException('El usuario no existe');
-		}
-
-		if (needFullUser) {
-			return user;
-		}
-
-		const userResponse: UserResponse = {
-			id: user.id,
-			email: user.userEmail,
-			createdAt: user.createdAt,
-		};
-
-		return userResponse;
-	}
-
-	async Create(body: CreateUserDto): Promise<UserResponse> {
 		try {
-			const thisUser = await this.usersRepository.save(body);
-
-			const userResponse: UserResponse = {
-				id: thisUser.id,
-				email: thisUser.userEmail,
-				createdAt: thisUser.createdAt,
-			};
-
-			return userResponse;
+			const users = await this.usersRepository.find();
+			return users;
 		} catch {
-			throw new BadRequestException('Error creating user');
+			throw new BadRequestException('Error al encontrar usuarios');
 		}
 	}
 
-	async Update(id: number, changes: UpdateUserDto): Promise<boolean | UserResponse> {
-		const user = await this.FindOneById(id, true);
+	async FindOneById(id: number): Promise<Users> {
+		try {
+			const user = await this.usersRepository.findOne({
+				where: {
+					id: id,
+				},
+			});
 
-		if (user instanceof Users) {
+			if (user === null) {
+				throw new NotFoundException('El usuario no existe');
+			}
+
+			return user;
+		} catch {
+			throw new BadRequestException('Error al encontrar usuario');
+		}
+	}
+
+	async Create(body: CreateUserDto): Promise<Users> {
+		try {
+			const user = await this.usersRepository.save(body);
+
+			return user;
+		} catch {
+			throw new BadRequestException('Error al crear el usuario');
+		}
+	}
+
+	async Update(id: number, changes: UpdateUserDto): Promise<Users> {
+		try {
+			const user = await this.FindOneById(id);
+
 			const newUser = this.usersRepository.merge(user, changes);
 
-			const userResponse: UserResponse = {
-				id: newUser.id,
-				email: newUser.userEmail,
-				updatedAt: newUser.updatedAt,
-			};
-
-			return userResponse;
+			return newUser;
+		} catch {
+			throw new BadRequestException('Error al actualizar el usuario');
 		}
-
-		return false;
 	}
 
 	async Delete(id: number) {
-		const user = await this.FindOneById(id);
-		await this.usersRepository.delete(user.id);
-		return { message: 'User deleted' };
+		try {
+			const user = await this.FindOneById(id);
+			await this.usersRepository.delete(user.id);
+			return { message: 'User deleted' };
+		} catch {
+			throw new BadRequestException('Error al eliminar el usuario');
+		}
 	}
 }

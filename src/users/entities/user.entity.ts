@@ -11,6 +11,7 @@ export class Users extends BaseEntity {
 		type: 'varchar',
 		length: 255,
 		comment: 'Nombre del usuario',
+		select: false,
 	})
 	userPassword: string;
 
