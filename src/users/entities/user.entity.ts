@@ -1,4 +1,5 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { BaseEntity, Column, CreateDateColumn, Entity, Index, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Profile } from './profile.entity';
 
 @Entity('users')
 @Index(['userEmail'])
@@ -23,6 +24,9 @@ export class Users extends BaseEntity {
 		unique: true,
 	})
 	userEmail: string;
+
+	@OneToOne(() => Profile)
+	profile: Profile;
 
 	@CreateDateColumn({
 		name: 'created_at',

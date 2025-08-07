@@ -41,11 +41,14 @@ export class Profile extends BaseEntity {
 	})
 	profileAvatar: string;
 
-	@OneToOne(() => Users)
+	@OneToOne(() => Users, {
+		nullable: false,
+		cascade: true,
+	})
 	@JoinColumn({
 		name: 'user_id',
 	})
-	userId: Users;
+	user: Users;
 
 	@CreateDateColumn({
 		name: 'created_at',
