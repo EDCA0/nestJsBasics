@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { join } from 'path';
-import { UsersModule } from './users/users.module';
+import { UsersModule } from './users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Env } from './models/env.model';
+import { Env } from './env.model';
 
 @Module({
 	imports: [
