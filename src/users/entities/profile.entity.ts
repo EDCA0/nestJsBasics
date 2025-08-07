@@ -37,6 +37,7 @@ export class User extends BaseEntity {
 		type: 'varchar',
 		length: 300,
 		comment: 'URL del avatar del usuario',
+		nullable: true,
 	})
 	profileAvatar: string;
 
