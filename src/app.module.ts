@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
-import { Env } from '../models/env.model';
-import { ProfilesModule } from './profile.module';
-import { UsersModule } from './users.module';
+import { Env } from './models/env.model';
+import { ProfilesModule } from './profiles/profile.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
 	imports: [
