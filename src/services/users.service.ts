@@ -2,13 +2,16 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Users } from '../entities/user.entity';
-import { CreateUserDto, UpdateUserDto } from 'src/dtos/';
+import { CreateProfileDto, CreateUserDto, UpdateUserDto } from 'src/dtos/';
+import { Profile } from 'src/entities/profile.entity';
 
 @Injectable()
 export class UsersService {
 	constructor(
 		@InjectRepository(Users)
 		private usersRepository: Repository<Users>,
+		@InjectRepository(Profile)
+		private profileRepository: Repository<Profile>,
 	) {}
 
 	async FindAll(): Promise<Users[]> {
@@ -38,11 +41,17 @@ export class UsersService {
 		}
 	}
 
-	async Create(body: CreateUserDto): Promise<Users> {
+	async Create(body: CreateUserDto): Promise<object> {
 		try {
 			const user = await this.usersRepository.save(body);
 
-			return user;
+			const responseUser = {
+				id: user.id,
+				email: user.userEmail,
+				created_at: user.createdAt,
+			};
+
+			return responseUser;
 		} catch {
 			throw new BadRequestException('Error al crear el usuario');
 		}
@@ -70,7 +79,15 @@ export class UsersService {
 		}
 	}
 
-	findUserAndProfile(id: number) {
-		console.log(id);
+	async crateUserProfile(body: CreateProfileDto): Promise<Profile> {
+		try {
+			await this.FindOneById(body.userId.id);
+			const profile = await this.profileRepository.save(body);
+
+			return profile;
+		} catch (error) {
+			console.log(error);
+			throw new NotFoundException('Error al crear el perfil');
+		}
 	}
 }
