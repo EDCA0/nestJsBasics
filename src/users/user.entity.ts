@@ -25,7 +25,7 @@ export class Users extends BaseEntity {
 	})
 	userEmail: string;
 
-	@OneToOne(() => Profile)
+	@OneToOne(() => Profile, (profile) => profile.userId)
 	profile: Profile;
 
 	@CreateDateColumn({

@@ -30,6 +30,9 @@ export class UsersService {
 				where: {
 					id: id,
 				},
+				relations: {
+					profile: true,
+				},
 			});
 
 			if (user === null) {
@@ -37,8 +40,30 @@ export class UsersService {
 			}
 
 			return user;
-		} catch {
+		} catch (error) {
+			console.log(error);
 			throw new BadRequestException('Error al encontrar usuario');
+		}
+	}
+
+	async JustFindId(id: number): Promise<Users> {
+		try {
+			const user = await this.usersRepository.findOne({
+				select: {
+					id: true,
+				},
+				where: {
+					id: id,
+				},
+			});
+
+			if (user === null || user === undefined) {
+				throw new NotFoundException('El usuario no existe');
+			}
+
+			return user;
+		} catch {
+			throw new BadRequestException('Error al crear el usuario');
 		}
 	}
 
@@ -64,6 +89,8 @@ export class UsersService {
 
 			const newUser = this.usersRepository.merge(user, changes);
 
+			await this.usersRepository.save(newUser);
+
 			return newUser;
 		} catch {
 			throw new BadRequestException('Error al actualizar el usuario');
@@ -72,8 +99,8 @@ export class UsersService {
 
 	async Delete(id: number) {
 		try {
-			const user = await this.FindOneById(id);
-			await this.usersRepository.delete(user.id);
+			await this.JustFindId(id);
+			await this.usersRepository.delete(id);
 			return { message: 'User deleted' };
 		} catch {
 			throw new BadRequestException('Error al eliminar el usuario');
@@ -82,7 +109,7 @@ export class UsersService {
 
 	async crateUserProfile(body: CreateProfileDto): Promise<Profile> {
 		try {
-			await this.FindOneById(body.userId.id);
+			await this.JustFindId(body.userId.id);
 			const profile = await this.profileRepository.save(body);
 
 			return profile;
