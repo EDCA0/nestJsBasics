@@ -5,6 +5,7 @@ import { join } from 'path';
 import { Env } from './models/env.model';
 import { ProfilesModule } from './profiles/profile.module';
 import { UsersModule } from './users/users.module';
+import { PostModule } from './post/post.module';
 
 @Module({
 	imports: [
@@ -27,6 +28,7 @@ import { UsersModule } from './users/users.module';
 		}),
 		UsersModule,
 		ProfilesModule,
+		PostModule,
 	],
 })
 export class AppModule {}
