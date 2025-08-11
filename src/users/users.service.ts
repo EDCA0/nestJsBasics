@@ -107,7 +107,7 @@ export class UsersService {
 		}
 	}
 
-	async crateUserProfile(body: CreateProfileDto): Promise<Profile> {
+	async createUserProfile(body: CreateProfileDto): Promise<Profile> {
 		try {
 			await this.JustFindId(body.userId.id);
 			const profile = await this.profileRepository.save(body);

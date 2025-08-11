@@ -39,7 +39,7 @@ export class UsersController {
 
 	@Post(':id/profile')
 	createUserProfile(@Body() body: CreateProfileDto): Promise<Profile> {
-		return this.usersService.crateUserProfile(body);
+		return this.usersService.createUserProfile(body);
 	}
 
 	@Get(':id/profile')
