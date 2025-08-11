@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Profile } from 'src/profiles/profile.entity';
+import { Profile } from 'src/profiles/entities/profile.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()

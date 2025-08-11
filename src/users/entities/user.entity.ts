@@ -1,5 +1,5 @@
 import { BaseEntity, Column, CreateDateColumn, Entity, Index, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { Profile } from 'src/profiles/profile.entity';
+import { Profile } from 'src/profiles/entities/profile.entity';
 
 @Entity('users')
 @Index(['userEmail'])
