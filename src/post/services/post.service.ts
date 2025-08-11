@@ -56,6 +56,27 @@ export class PostService {
 		}
 	}
 
+	async JustFindId(id: number): Promise<Posts> {
+		try {
+			const post = await this.postsRepository.findOne({
+				select: {
+					id: true,
+				},
+				where: {
+					id: id,
+				},
+			});
+
+			if (post === null) {
+				throw new NotFoundException('El post no existe');
+			}
+
+			return post;
+		} catch {
+			throw new BadRequestException('Error al encontrar post');
+		}
+	}
+
 	async FindAllByProfile(id: number): Promise<Posts[]> {
 		try {
 			const profileId = await this.profileService.JustFindId(id);
@@ -139,7 +160,7 @@ export class PostService {
 	async Delete(id: number): Promise<object> {
 		try {
 			// Validamos si el post existe antes de intentar eliminarlo
-			await this.FindOneById(id);
+			await this.JustFindId(id);
 			await this.postsRepository.delete(id);
 			return { message: 'Post eliminado correctamente' };
 		} catch {
