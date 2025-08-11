@@ -1,12 +1,12 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
 import { CreateProfileDto } from 'src/profiles/dto';
 import { Profiles } from 'src/profiles/entities/profiles.entity';
-import { ProfileService } from 'src/profiles/profile.service';
-import { UsersService } from 'src/users/users.service';
-import { CreateUserDto, UpdateUserDto } from './dto';
-import { Users } from './entities/users.entity';
+import { ProfileService } from 'src/profiles/services/profile.service';
+import { UsersService } from '../services/users.service';
+import { CreateUserDto, UpdateUserDto } from '../dto';
+import { Users } from '../entities/users.entity';
 import { Posts } from 'src/post/entities/posts.entity';
-import { PostService } from 'src/post/post.service';
+import { PostService } from 'src/post/services/post.service';
 
 @Controller('users')
 export class UsersController {
