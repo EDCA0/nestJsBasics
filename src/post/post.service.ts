@@ -91,7 +91,8 @@ export class PostService {
 	 */
 	async Create(body: CreatePostDto): Promise<Posts> {
 		try {
-			const post = await this.postsRepository.save({ ...body, profile: { id: body.profileId } });
+			const idProfile = await this.profileService.JustFindId(body.profileId);
+			const post = await this.postsRepository.save({ ...body, profile: idProfile });
 			return this.FindOneById(post.id);
 		} catch (error) {
 			// Si el usersService lanza una NotFoundException, la re-lanzamos.
