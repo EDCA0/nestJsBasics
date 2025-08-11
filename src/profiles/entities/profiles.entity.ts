@@ -1,5 +1,6 @@
+import { Posts } from 'src/post/entities/posts.entity';
 import { Users } from 'src/users/entities/users.entity';
-import { BaseEntity, Column, CreateDateColumn, Entity, Index, JoinColumn, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { BaseEntity, Column, CreateDateColumn, Entity, Index, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 @Entity('profiles')
 @Index(['profileEmail'])
@@ -59,4 +60,7 @@ export class Profiles extends BaseEntity {
 		name: 'updated_at',
 	})
 	updatedAt: Date;
+
+	@OneToMany(() => Posts, (post) => post.profile)
+	post: Posts[];
 }

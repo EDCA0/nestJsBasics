@@ -5,12 +5,15 @@ import { ProfileService } from 'src/profiles/profile.service';
 import { UsersService } from 'src/users/users.service';
 import { CreateUserDto, UpdateUserDto } from './dto';
 import { Users } from './entities/users.entity';
+import { Posts } from 'src/post/entities/posts.entity';
+import { PostService } from 'src/post/post.service';
 
 @Controller('users')
 export class UsersController {
 	constructor(
 		private readonly usersService: UsersService,
 		private readonly profileService: ProfileService,
+		private readonly postService: PostService,
 	) {}
 	@Get()
 	getUsers(): Promise<Users[]> {
@@ -45,5 +48,10 @@ export class UsersController {
 	@Get(':id/profile')
 	getProfileById(@Param('id', ParseIntPipe) id: number): Promise<Profiles> {
 		return this.profileService.findOneById(id);
+	}
+
+	@Get(':id/profile/posts')
+	getPostByProfile(@Param('id', ParseIntPipe) id: number): Promise<Posts[]> {
+		return this.postService.FindAllByProfile(id);
 	}
 }

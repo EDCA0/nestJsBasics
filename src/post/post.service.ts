@@ -3,12 +3,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreatePostDto, UpdatePostDto } from './dto';
 import { Posts } from './entities/posts.entity';
+import { ProfileService } from 'src/profiles/profile.service';
 
 @Injectable()
 export class PostService {
 	constructor(
 		@InjectRepository(Posts)
 		private postsRepository: Repository<Posts>,
+		private readonly profileService: ProfileService,
 	) {}
 
 	/**
@@ -37,6 +39,11 @@ export class PostService {
 				where: {
 					id: id,
 				},
+				relations: {
+					profile: {
+						userId: true,
+					},
+				},
 			});
 
 			if (!post) {
@@ -44,6 +51,31 @@ export class PostService {
 			}
 
 			return post;
+		} catch {
+			throw new BadRequestException('Error al encontrar el post');
+		}
+	}
+
+	async FindAllByProfile(id: number): Promise<Posts[]> {
+		try {
+			const profileId = await this.profileService.JustFindId(id);
+
+			const posts = await this.postsRepository.find({
+				where: {
+					profile: profileId,
+				},
+				relations: {
+					profile: {
+						userId: true,
+					},
+				},
+			});
+
+			if (posts === null) {
+				throw new NotFoundException('El post no existe');
+			}
+
+			return posts;
 		} catch {
 			throw new BadRequestException('Error al encontrar el post');
 		}
@@ -59,8 +91,8 @@ export class PostService {
 	 */
 	async Create(body: CreatePostDto): Promise<Posts> {
 		try {
-			const post = await this.postsRepository.save(body);
-			return post;
+			const post = await this.postsRepository.save({ ...body, profile: { id: body.profileId } });
+			return this.FindOneById(post.id);
 		} catch (error) {
 			// Si el usersService lanza una NotFoundException, la re-lanzamos.
 			if (error instanceof NotFoundException) {

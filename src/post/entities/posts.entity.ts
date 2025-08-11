@@ -1,4 +1,5 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Profiles } from 'src/profiles/entities/profiles.entity';
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 /**
  * Entidad que representa un post o entrada de blog.
@@ -96,4 +97,8 @@ export class Posts extends BaseEntity {
 		comment: 'Fecha y hora de la última actualización del post',
 	})
 	updatedAt: Date;
+
+	@ManyToOne(() => Profiles, (profile) => profile.post, { nullable: false })
+	@JoinColumn({ name: 'profile_id' })
+	profile: Profiles;
 }

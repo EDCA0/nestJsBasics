@@ -30,4 +30,25 @@ export class ProfileService {
 			throw new BadRequestException('Error al encontrar perfil');
 		}
 	}
+
+	async JustFindId(id: number): Promise<Profiles> {
+		try {
+			const profile = await this.profileRepository.findOne({
+				select: {
+					id: true,
+				},
+				where: {
+					id: id,
+				},
+			});
+
+			if (profile === null) {
+				throw new NotFoundException('El perfil no existe');
+			}
+
+			return profile;
+		} catch {
+			throw new BadRequestException('Error al encontrar perfil');
+		}
+	}
 }
