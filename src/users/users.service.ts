@@ -1,18 +1,18 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateProfileDto } from 'src/profiles/dto';
-import { Profile } from 'src/profiles/entities/profile.entity';
+import { Profiles } from 'src/profiles/entities/profiles.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto, UpdateUserDto } from './dto';
-import { Users } from './entities/user.entity';
+import { Users } from './entities/users.entity';
 
 @Injectable()
 export class UsersService {
 	constructor(
 		@InjectRepository(Users)
 		private usersRepository: Repository<Users>,
-		@InjectRepository(Profile)
-		private profileRepository: Repository<Profile>,
+		@InjectRepository(Profiles)
+		private profileRepository: Repository<Profiles>,
 	) {}
 
 	async FindAll(): Promise<Users[]> {
@@ -107,7 +107,7 @@ export class UsersService {
 		}
 	}
 
-	async createUserProfile(body: CreateProfileDto): Promise<Profile> {
+	async createUserProfile(body: CreateProfileDto): Promise<Profiles> {
 		try {
 			await this.JustFindId(body.userId.id);
 			const profile = await this.profileRepository.save(body);

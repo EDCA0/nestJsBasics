@@ -2,20 +2,20 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreatePostDto, UpdatePostDto } from './dto';
-import { Post } from './entities/post.entity';
+import { Posts } from './entities/posts.entity';
 
 @Injectable()
 export class PostService {
 	constructor(
-		@InjectRepository(Post)
-		private postsRepository: Repository<Post>,
+		@InjectRepository(Posts)
+		private postsRepository: Repository<Posts>,
 	) {}
 
 	/**
 	 * Encuentra todos los posts.
 	 * @returns Una promesa que se resuelve con un array de posts.
 	 */
-	async FindAll(): Promise<Post[]> {
+	async FindAll(): Promise<Posts[]> {
 		try {
 			const posts = await this.postsRepository.find();
 			return posts;
@@ -31,7 +31,7 @@ export class PostService {
 	 * @throws NotFoundException si el post no existe.
 	 * @throws BadRequestException si hay un error al buscar el post.
 	 */
-	async FindOneById(id: number): Promise<Post> {
+	async FindOneById(id: number): Promise<Posts> {
 		try {
 			const post = await this.postsRepository.findOne({
 				where: {
@@ -57,7 +57,7 @@ export class PostService {
 	 * @throws NotFoundException si el usuario no existe.
 	 * @throws BadRequestException si hay un error al crear el post.
 	 */
-	async Create(body: CreatePostDto): Promise<Post> {
+	async Create(body: CreatePostDto): Promise<Posts> {
 		try {
 			const post = await this.postsRepository.save(body);
 			return post;
@@ -79,7 +79,7 @@ export class PostService {
 	 * @throws NotFoundException si el post no existe.
 	 * @throws BadRequestException si hay un error al actualizar el post.
 	 */
-	async Update(id: number, changes: UpdatePostDto): Promise<Post> {
+	async Update(id: number, changes: UpdatePostDto): Promise<Posts> {
 		try {
 			// Se busca el post existente para garantizar que exista
 			const post = await this.FindOneById(id);

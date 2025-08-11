@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsInt, IsNotEmpty, IsOptional, IsPositive, IsString, IsUrl, Length } from 'class-validator';
-import { Users } from 'src/users/entities/user.entity';
+import { Users } from 'src/users/entities/users.entity';
 
 export class CreateProfileDto {
 	@IsNotEmpty({ message: 'El nombre del perfil no puede estar vacío.' })

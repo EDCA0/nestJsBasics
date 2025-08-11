@@ -1,16 +1,16 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Profile } from 'src/profiles/entities/profile.entity';
+import { Profiles } from 'src/profiles/entities/profiles.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class ProfileService {
 	constructor(
-		@InjectRepository(Profile)
-		private profileRepository: Repository<Profile>,
+		@InjectRepository(Profiles)
+		private profileRepository: Repository<Profiles>,
 	) {}
 
-	async findOneById(id: number): Promise<Profile> {
+	async findOneById(id: number): Promise<Profiles> {
 		try {
 			const profile = await this.profileRepository.findOne({
 				where: {

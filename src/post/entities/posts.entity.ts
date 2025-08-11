@@ -7,7 +7,7 @@ import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, U
 @Entity({
 	name: 'posts',
 })
-export class Post extends BaseEntity {
+export class Posts extends BaseEntity {
 	/**
 	 * Identificador único del post.
 	 * Es la clave primaria de la tabla.
