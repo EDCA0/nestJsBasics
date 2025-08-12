@@ -47,7 +47,7 @@ export class Posts extends BaseEntity {
 	 */
 	@Column({
 		type: 'varchar',
-		length: 255,
+		length: 900,
 		name: 'cover_image',
 		nullable: true,
 		comment: 'URL de la imagen de portada del post',

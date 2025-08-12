@@ -22,6 +22,24 @@ export class Categories extends BaseEntity {
 	})
 	name: string;
 
+	@Column({
+		name: 'category_description',
+		type: 'varchar',
+		length: 800,
+		nullable: true,
+		comment: 'Descripcion de la categoría.',
+	})
+	description: string;
+
+	@Column({
+		name: 'cover_image',
+		type: 'varchar',
+		length: 800,
+		nullable: true,
+		comment: 'URL de la imagen de portada para la categoría.',
+	})
+	coverImage: string;
+
 	/**
 	 * Fecha y hora en que se creó el registro de la categoría.
 	 */
