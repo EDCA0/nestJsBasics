@@ -1,4 +1,5 @@
-import { BaseEntity, Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { BaseEntity, Column, CreateDateColumn, Entity, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Posts } from './posts.entity';
 
 @Entity({ name: 'categories' })
 export class Categories extends BaseEntity {
@@ -38,4 +39,7 @@ export class Categories extends BaseEntity {
 		comment: 'Fecha y hora de la última actualización. Se modifica automáticamente en cada actualización.',
 	})
 	updatedAt: Date;
+
+	@ManyToMany(() => Posts, (post) => post.categories)
+	posts: Posts[];
 }

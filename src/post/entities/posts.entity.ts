@@ -1,5 +1,6 @@
 import { Profiles } from 'src/profiles/entities/profiles.entity';
-import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Categories } from './category.entity';
 
 /**
  * Entidad que representa un post o entrada de blog.
@@ -101,4 +102,12 @@ export class Posts extends BaseEntity {
 	@ManyToOne(() => Profiles, (profile) => profile.post, { nullable: false })
 	@JoinColumn({ name: 'profile_id' })
 	profile: Profiles;
+
+	@ManyToMany(() => Categories, (category) => category.posts)
+	@JoinTable({
+		name: 'posts_categories',
+		joinColumn: { name: 'post_id', referencedColumnName: 'id' },
+		inverseJoinColumn: { name: 'category_id', referencedColumnName: 'id' },
+	})
+	categories: Categories[];
 }

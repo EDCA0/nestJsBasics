@@ -1,9 +1,10 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ProfileService } from 'src/profiles/services/profile.service';
 import { Repository } from 'typeorm';
 import { CreatePostDto, UpdatePostDto } from '../dto';
 import { Posts } from '../entities/posts.entity';
-import { ProfileService } from 'src/profiles/services/profile.service';
+import { CategoriesService } from './categories.service';
 
 @Injectable()
 export class PostService {
@@ -11,6 +12,7 @@ export class PostService {
 		@InjectRepository(Posts)
 		private postsRepository: Repository<Posts>,
 		private readonly profileService: ProfileService,
+		private readonly categoryService: CategoriesService,
 	) {}
 
 	/**
@@ -43,6 +45,7 @@ export class PostService {
 					profile: {
 						userId: true,
 					},
+					categories: true,
 				},
 			});
 
@@ -102,6 +105,32 @@ export class PostService {
 		}
 	}
 
+	async findByCategoryId(id: number): Promise<Posts[]> {
+		try {
+			const category = await this.categoryService.JustFindId(id);
+
+			const posts = await this.postsRepository.find({
+				where: {
+					categories: category,
+				},
+				relations: {
+					profile: {
+						userId: true,
+					},
+					categories: true,
+				},
+			});
+
+			if (posts === null) {
+				throw new NotFoundException('El post no existe');
+			}
+
+			return posts;
+		} catch {
+			throw new BadRequestException('Error al encontrar el post');
+		}
+	}
+
 	/**
 	 * Crea un nuevo post.
 	 * @param body Los datos del post a crear.
@@ -113,7 +142,18 @@ export class PostService {
 	async Create(body: CreatePostDto): Promise<Posts> {
 		try {
 			const idProfile = await this.profileService.JustFindId(body.profileId);
-			const post = await this.postsRepository.save({ ...body, profile: idProfile });
+			const categoryIds = await this.categoryService.findByIds(body.categoryIds);
+
+			if (body.categoryIds?.length !== categoryIds.length) {
+				throw new BadRequestException('Ids no validas o no encontradas');
+			}
+
+			const post = await this.postsRepository.save({
+				...body,
+				profile: idProfile,
+				categories: categoryIds,
+			});
+
 			return this.FindOneById(post.id);
 		} catch (error) {
 			// Si el usersService lanza una NotFoundException, la re-lanzamos.
@@ -135,16 +175,26 @@ export class PostService {
 	 */
 	async Update(id: number, changes: UpdatePostDto): Promise<Posts> {
 		try {
+			const categoryIds = changes.categoryIds;
 			// Se busca el post existente para garantizar que exista
-			const post = await this.FindOneById(id);
+			const post = await this.postsRepository.preload({
+				id: id,
+				...changes,
+			});
 
-			// Se combinan los cambios con el post existente
-			const updatedPost = this.postsRepository.merge(post, changes);
+			if (!post) {
+				throw new NotFoundException(`El post con el ID ${id} no fue encontrado.`);
+			}
+			if (categoryIds) {
+				// Usamos la función robusta que creamos para buscar y validar los IDs.
+				const categories = await this.categoryService.findByIds(categoryIds);
 
+				// 4. Reemplaza por completo la colección de categorías en la entidad Post.
+				post.categories = categories;
+			}
 			// Se guarda el post actualizado
-			await this.postsRepository.save(updatedPost);
 
-			return updatedPost;
+			return await this.postsRepository.save(post);
 		} catch {
 			throw new BadRequestException('Error al actualizar el post');
 		}

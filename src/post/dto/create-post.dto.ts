@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, IsUrl, Length } from 'class-validator';
+import { IsArray, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, IsUrl, Length } from 'class-validator';
 
 export class CreatePostDto {
 	@IsNotEmpty({ message: 'El título no puede estar vacío.' })
@@ -24,4 +24,8 @@ export class CreatePostDto {
 	@IsNumber({ allowNaN: false, allowInfinity: false }, { message: 'El valor del identificador del perfil (profileId) debe ser un número válido.' })
 	@IsPositive({ message: 'El identificador del perfil (profileId) debe ser un número positivo, mayor que cero.' })
 	profileId: number;
+
+	@IsArray({ message: 'Las categorías deben ser proporcionadas en formato de arreglo.' })
+	@IsNumber({}, { each: true, message: 'Cada ID de categoría debe ser un número.' })
+	categoryIds: number[];
 }

@@ -1,6 +1,6 @@
 import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { CreateCategoryDto, UpdateCategoryDto } from '../dto';
 import { Categories } from '../entities/category.entity';
 
@@ -59,6 +59,18 @@ export class CategoriesService {
 		} catch {
 			throw new BadRequestException('Error al encontrar La categoria');
 		}
+	}
+
+	async findByIds(categoryIds: number[] | undefined): Promise<Categories[]> {
+		if (!categoryIds || categoryIds.length === 0) {
+			return [];
+		}
+
+		const categories = await this.categoriesRepository.findBy({
+			id: In(categoryIds),
+		});
+
+		return categories;
 	}
 
 	/**

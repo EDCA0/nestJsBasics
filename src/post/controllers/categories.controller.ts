@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
 import { CreateCategoryDto, UpdateCategoryDto } from '../dto';
 import { CategoriesService } from '../services/categories.service';
+import { PostService } from '../services/post.service';
 
 /**
  * Controlador para gestionar las operaciones CRUD de las categorías.
@@ -8,7 +9,10 @@ import { CategoriesService } from '../services/categories.service';
  */
 @Controller('categories')
 export class CategoriesController {
-	constructor(private readonly categoriesService: CategoriesService) {}
+	constructor(
+		private readonly categoriesService: CategoriesService,
+		private readonly postService: PostService,
+	) {}
 
 	/**
 	 * Endpoint para crear una nueva categoría.
@@ -39,6 +43,11 @@ export class CategoriesController {
 		// ParseIntPipe valida que el 'id' recibido en la URL sea un número válido.
 		// Si no lo es, NestJS arrojará automáticamente un BadRequestException.
 		return this.categoriesService.FindOneById(id);
+	}
+
+	@Get(':id/posts')
+	findByCategoryId(@Param('id', ParseIntPipe) id: number) {
+		return this.postService.findByCategoryId(id);
 	}
 
 	/**
