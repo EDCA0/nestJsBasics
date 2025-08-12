@@ -85,6 +85,21 @@ export class PostService {
 			const profileId = await this.profileService.JustFindId(id);
 
 			const posts = await this.postsRepository.find({
+				select: {
+					id: true,
+					title: true,
+					profile: {
+						id: true,
+						userId: {
+							id: true,
+							userEmail: true,
+						},
+					},
+					categories: {
+						id: true,
+						name: true,
+					},
+				},
 				where: {
 					profile: profileId,
 				},
@@ -92,6 +107,7 @@ export class PostService {
 					profile: {
 						userId: true,
 					},
+					categories: true,
 				},
 			});
 
