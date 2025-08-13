@@ -1,11 +1,15 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { Users } from 'src/users/entities/users.entity';
 import { UsersService } from 'src/users/services/users.service';
 
 @Injectable()
 export class AuthService {
-	constructor(private usersService: UsersService) {}
+	constructor(
+		private usersService: UsersService,
+		private jwtService: JwtService,
+	) {}
 
 	async validateUser(email: string, pass: string): Promise<Users> {
 		try {
@@ -29,5 +33,10 @@ export class AuthService {
 			}
 			throw new BadRequestException('Error al autenticar');
 		}
+	}
+
+	generateToken(user: Users) {
+		const payload = { sub: user.id };
+		return this.jwtService.sign(payload);
 	}
 }
