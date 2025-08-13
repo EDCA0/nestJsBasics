@@ -67,6 +67,20 @@ export class UsersService {
 		}
 	}
 
+	async FindByEmail(email: string): Promise<Users | null> {
+		try {
+			const user = await this.usersRepository.findOne({
+				where: {
+					userEmail: email,
+				},
+			});
+
+			return user;
+		} catch {
+			throw new BadRequestException('Error al crear el usuario');
+		}
+	}
+
 	async Create(body: CreateUserDto): Promise<object> {
 		try {
 			const newUser = this.usersRepository.create(body);

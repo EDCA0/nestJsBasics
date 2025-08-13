@@ -6,6 +6,7 @@ import { Env } from './models/env.model';
 import { ProfilesModule } from './profiles/profile.module';
 import { UsersModule } from './users/users.module';
 import { PostModule } from './post/post.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
 	imports: [
@@ -29,6 +30,7 @@ import { PostModule } from './post/post.module';
 		UsersModule,
 		ProfilesModule,
 		PostModule,
+		AuthModule,
 	],
 })
 export class AppModule {}
