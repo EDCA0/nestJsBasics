@@ -1,5 +1,6 @@
 import { Profiles } from 'src/profiles/entities/profiles.entity';
-import { BaseEntity, Column, CreateDateColumn, Entity, Index, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { BaseEntity, BeforeInsert, Column, CreateDateColumn, Entity, Index, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 @Entity('users')
 @Index(['userEmail'])
@@ -37,4 +38,9 @@ export class Users extends BaseEntity {
 		name: 'updated_at',
 	})
 	updatedAt: Date;
+
+	@BeforeInsert()
+	async hashPassword() {
+		this.userPassword = await bcrypt.hash(this.userPassword, 10);
+	}
 }
