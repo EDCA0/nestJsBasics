@@ -1,11 +1,13 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, UseGuards } from '@nestjs/common';
 import { PostService } from '../services/post.service';
 import { CreatePostDto, UpdatePostDto } from '../dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('post')
 export class PostController {
 	constructor(private readonly postService: PostService) {}
 
+	@UseGuards(AuthGuard('jwt'))
 	@Post()
 	create(@Body() createPostDto: CreatePostDto) {
 		return this.postService.Create(createPostDto);
