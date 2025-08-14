@@ -155,9 +155,9 @@ export class PostService {
 	 * @throws NotFoundException si el usuario no existe.
 	 * @throws BadRequestException si hay un error al crear el post.
 	 */
-	async Create(body: CreatePostDto): Promise<Posts> {
+	async Create(body: CreatePostDto, profileId: number): Promise<Posts> {
 		try {
-			const idProfile = await this.profileService.JustFindId(body.profileId);
+			const idProfile = await this.profileService.JustFindId(profileId);
 			const categoryIds = await this.categoryService.findByIds(body.categoryIds);
 
 			if (body.categoryIds?.length !== categoryIds.length) {

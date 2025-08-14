@@ -42,8 +42,8 @@ export class UsersController {
 	}
 
 	@Post(':id/profile')
-	createUserProfile(@Body() body: CreateProfileDto): Promise<Profiles> {
-		return this.usersService.createUserProfile(body);
+	createUserProfile(@Param('id', ParseIntPipe) id: number, @Body() body: CreateProfileDto): Promise<Profiles> {
+		return this.usersService.createUserProfile(body, id);
 	}
 
 	@Get(':id/profile')

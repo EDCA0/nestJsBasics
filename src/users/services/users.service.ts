@@ -46,6 +46,27 @@ export class UsersService {
 		}
 	}
 
+	async JustFindEmail(id: number): Promise<Users> {
+		try {
+			const user = await this.usersRepository.findOne({
+				select: {
+					userEmail: true,
+				},
+				where: {
+					id: id,
+				},
+			});
+
+			if (user === null || user === undefined) {
+				throw new NotFoundException('El usuario no existe');
+			}
+
+			return user;
+		} catch {
+			throw new BadRequestException('Error al crear el usuario');
+		}
+	}
+
 	async JustFindId(id: number): Promise<Users> {
 		try {
 			const user = await this.usersRepository.findOne({
@@ -121,10 +142,20 @@ export class UsersService {
 		}
 	}
 
-	async createUserProfile(body: CreateProfileDto): Promise<Profiles> {
+	async createUserProfile(body: CreateProfileDto, id: number): Promise<Profiles> {
 		try {
-			await this.JustFindId(body.userId.id);
-			const profile = await this.profileRepository.save(body);
+			const userId = await this.JustFindId(id);
+
+			const profile = this.profileRepository.create(body);
+			profile.userId = userId;
+
+			const user = await this.JustFindEmail(id);
+
+			if (user.userEmail !== body.profileEmail) {
+				throw new BadRequestException('Error al crear el perfil');
+			}
+
+			await this.profileRepository.save(profile);
 
 			return profile;
 		} catch (error) {
