@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, UseGuards } from '@nestjs/common';
 import { CreateProfileDto } from 'src/profiles/dto';
 import { Profiles } from 'src/profiles/entities/profiles.entity';
 import { ProfileService } from 'src/profiles/services/profile.service';
@@ -7,6 +7,7 @@ import { CreateUserDto, UpdateUserDto } from '../dto';
 import { Users } from '../entities/users.entity';
 import { Posts } from 'src/post/entities/posts.entity';
 import { PostService } from 'src/post/services/post.service';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('users')
 export class UsersController {
@@ -50,6 +51,7 @@ export class UsersController {
 		return this.profileService.findOneById(id);
 	}
 
+	@UseGuards(AuthGuard('jwt'))
 	@Get(':id/profile/posts')
 	getPostByProfile(@Param('id', ParseIntPipe) id: number): Promise<Posts[]> {
 		return this.postService.FindAllByProfile(id);
