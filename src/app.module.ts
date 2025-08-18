@@ -7,12 +7,14 @@ import { ProfilesModule } from './profiles/profile.module';
 import { UsersModule } from './users/users.module';
 import { PostModule } from './post/post.module';
 import { AuthModule } from './auth/auth.module';
+import { validate } from './config.validation';
 
 @Module({
 	imports: [
 		ConfigModule.forRoot({
 			isGlobal: true,
 			envFilePath: join(__dirname, '..', '..', '.env'),
+			validate,
 		}),
 		TypeOrmModule.forRootAsync({
 			useFactory: (configService: ConfigService<Env>) => ({
