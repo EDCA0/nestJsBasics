@@ -12,6 +12,9 @@ async function bootstrap() {
 			whitelist: true,
 			forbidNonWhitelisted: true,
 			transform: true,
+			transformOptions: {
+				enableImplicitConversion: true, //> En caso de usar paginacion query poder usar parseIntPipe al objeto de strings que llegaria(query)
+			},
 		}),
 	);
 
